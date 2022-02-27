@@ -17,10 +17,45 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.system.exitProcess
 
+val progDescription = """Pseudo salesman
+    A utility for designing and simulating paths for scope arts
+    Simulator: 
+        A forward Euler method (simplest) programmed to act as a Low-Pass Filter
+        Every parameter is configurable, the output will be drawn onto a PNG image
+        -d
+    Path Util:
+        Identify connected shapes and tries to do the least jump between those shapes
+        Uses a Kruskal algorithm
+        -o to output the result as a C array
+        use -s to skip it if you want to draw the original dataset with the sim tool
+    
+    example:
+    ./pseudo-salesman.jar -i source.c -o out.c
+        It will read the `source.c` file and optimize it
+        
+    ./pseudo-salesman.jar -i source.c -d out.png -s
+        It will skip the optimization, just simulate the art from the original input
+        
+    You can use the simulator and path tools in the same call.
+    If you do, the path optimizer will run first
+    
+    ./pseudo-salesman.jar -i stdin -d out.png -s -o stdout
+        It will read the input from the terminal (stdin) and print the optimized array to the terminal (stdout)
+        And run the simulator!
+        You can use pipes < source.c > out.c
+        
+Args:
+""".trimIndent()
+
+val progShort = """Pseudo salesman
+    For more information, use -h
+
+Args:
+""".trimIndent()
 
 fun main(args: Array<String>) {
     val options = Options()
-    val input = Option("i", "input", true ,"The array input, \"stdin\" if the input will be received in the stdin").apply { this.isRequired = true }
+    val input = Option("i", "input", true ,"The array input, \"stdin\" if the input will be received in the stdin")
     val imagePath = Option("d", "draw", true, "Run simulator and draw result to a file")
     val imageWidth = Option("w", "width", true, "Width of the image, default: 2048px")
     val imageHeight = Option("h", "height", true, "Height of the image, default: 1024px")
@@ -40,17 +75,27 @@ fun main(args: Array<String>) {
     val stepT = Option("t", "stepTime", true, "The input feeding speed, default: 10.0t")
     val warmupT = Option("warmup", "warmupTime", true, "Simulation time before turning on the output for one cycle, default: 100.0t")
 
-    options.addOptions(input, imagePath, imageWidth, imageHeight, xOffset, yOffset, pencilWidth, pencilStrength, imageScale, output, isIntArray, skipSalesman, simStep, tau, stepT, warmupT)
+    val help = Option("h", "help", false, "Print the help text")
+
+    options.addOptions(input, imagePath, imageWidth, imageHeight, xOffset, yOffset, pencilWidth, pencilStrength, imageScale, output, isIntArray, skipSalesman, simStep, tau, stepT, warmupT, help)
 
 
     val parser: CommandLineParser = DefaultParser()
     val formatter = HelpFormatter()
 
     try {
-        val cmd = parser.parse(options, args);
+        val cmd = parser.parse(options, args)
+        if (cmd.hasOption(help)) {
+            println("You asked for help, you shall receive it:")
+            formatter.printHelp(progDescription, options)
+            exitProcess(0)
+        }
+        if (!cmd.hasOption(input)) {
+            throw ParseException("Please specify input with -i or --input")
+        }
         if (!cmd.hasOption(output) && !cmd.hasOption(imagePath)) {
             println("Please specify operation! -o or -d, can be both")
-            formatter.printHelp("utility-name", options)
+            formatter.printHelp(progShort, options)
             exitProcess(2)
         }
 
@@ -108,7 +153,7 @@ fun main(args: Array<String>) {
 
     } catch (e: ParseException) {
         println(e.message);
-        formatter.printHelp("utility-name", options);
+        formatter.printHelp(progShort, options);
 
         exitProcess(1);
     }
