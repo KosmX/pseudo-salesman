@@ -3,7 +3,7 @@ package dev.kosmx.pseudoSalesman
 import dev.kosmx.lowPassSimulator.ImageWrapper
 import dev.kosmx.lowPassSimulator.eulerSim
 import dev.kosmx.lowPassSimulator.getDataFromFile
-import dev.kosmx.lowPassSimulator.writeCArray
+import dev.kosmx.lowPassSimulator.writeArray
 import dev.kosmx.pseudoSalesman.graphUtil.connectSets
 import dev.kosmx.pseudoSalesman.graphUtil.kruskal
 import java.nio.file.Path
@@ -25,7 +25,7 @@ fun main(array: Array<String>) {
         posList.add(e)
     }
 
-    writeCArray(posList.iterator(), Paths.get("out.c"))
+    writeArray(posList.iterator(), Paths.get("out.c"))
 
 
     val seq = eulerSim(posList)

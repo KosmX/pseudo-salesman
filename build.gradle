@@ -1,5 +1,6 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.6.10'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'java'
 }
 
@@ -11,12 +12,35 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+    toFatJar
+}
+
 dependencies {
 
+    implementation "commons-cli:commons-cli:1.5.0"
+    toFatJar "commons-cli:commons-cli:1.5.0"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
+    toFatJar "org.jetbrains.kotlin:kotlin-stdlib"
+
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+}
+
+jar {
+    manifest {
+        attributes(
+                "Main-Class": "dev.kosmx.ScopeLogoCLIKt"
+        )
+    }
+    finalizedBy(shadowJar)
+    classifier "compiled"
+}
+
+shadowJar {
+    configurations = [project.configurations.toFatJar]
+    classifier ""
 }
 
 test {

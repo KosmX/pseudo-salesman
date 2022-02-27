@@ -12,7 +12,7 @@ fun buildLoops(posSet: Collection<Pos>): List<Loop> {
         loop += pos;
         positions.remove(pos)
 
-        print("Building loop: ")
+        //print("Building loop: ")
 
         while (true) {
             var nextPos: Pos? = null
@@ -28,14 +28,14 @@ fun buildLoops(posSet: Collection<Pos>): List<Loop> {
                 pos = nextPos
                 positions.remove(nextPos)
                 loop += nextPos
-                print("$nextDistance; ")
+                //print("$nextDistance; ")
                 continue
             }
             //TODO check if the loop is finished
             break
         }
         loops.add(loop)
-        print("\n")
+        //print("\n")
     }
     return loops
 }
@@ -56,7 +56,7 @@ fun buildLoopsV2(poseList: List<Pos>): List<Loop> {
             if (currentLoop.size() < 2 || (pos distance prev < maxDistnace + currentLoop.endJump())) {
                 currentLoop += pos
             } else {
-                println("Ending loop, big jump is required, distance: ${prev distance pos}")
+                //println("Ending loop, big jump is required, distance: ${prev distance pos}")
                 currentLoop = null
             }
         }

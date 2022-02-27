@@ -11,11 +11,11 @@ import kotlin.math.pow
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
-class ImageWrapper(val width: Int, val height: Int, val scale: Double, val pencilStrength: Int = 2, val pencilWidth: Double = 2.0, val yOffset:Int = -512) {
+class ImageWrapper(val width: Int, val height: Int, val scale: Double, val pencilStrength: Int = 2, val pencilWidth: Double = 2.0, val xOffset: Int = 0, val yOffset:Int = -512) {
     val image = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
 
     fun dot(x:Double, y:Double) {
-        val x = (x * scale).roundToInt()
+        val x = (x * scale).roundToInt() + xOffset
         val y = (y * scale).roundToInt() + yOffset
         if (x < 0 || x >= width || y < 0 || y >= height) return
         //internalDot(x, y, pencilStrength)
