@@ -12,30 +12,69 @@ fun buildLoops(posSet: Collection<Pos>): List<Loop> {
         loop += pos;
         positions.remove(pos)
 
+        print("Building loop: ")
+
         while (true) {
             var nextPos: Pos? = null
+            var nextDistance = Double.MAX_VALUE
             for (candidate in positions) {
-                if (candidate distance pos < maxDistance) {
+                if (candidate distance pos < nextDistance) {
                     nextPos = candidate
-                    break
+                    nextDistance = candidate distance pos
                 }
             }
 
-            if (nextPos != null) {
+            if (nextDistance < maxDistance && nextPos != null) {
                 pos = nextPos
                 positions.remove(nextPos)
+                loop += nextPos
+                print("$nextDistance; ")
                 continue
             }
             //TODO check if the loop is finished
             break
         }
         loops.add(loop)
+        print("\n")
     }
     return loops
 }
 
+/**
+ * Build loops, with a different approach.
+ * Don't need to re-order the original set, just find where it jumps
+ */
+fun buildLoopsV2(poseList: List<Pos>): List<Loop> {
+    var prev: Pos = poseList[0]
+    val loops = mutableListOf<Loop>()
+    val maxDistnace = connectDistance(poseList)
+
+    var currentLoop: Loop? = null
+
+    for (pos in poseList) {
+        if (currentLoop != null) {
+            if (currentLoop.size() < 2 || (pos distance prev < maxDistnace + currentLoop.endJump())) {
+                currentLoop += pos
+            } else {
+                println("Ending loop, big jump is required, distance: ${prev distance pos}")
+                currentLoop = null
+            }
+        }
+
+        if (currentLoop == null) {
+            currentLoop = Loop()
+            currentLoop += pos
+            loops.add(currentLoop)
+        }
+
+        prev = pos
+    }
+
+    return loops
+}
+
 fun connectDistance(positions: Collection<Pos>): Double {
-    return 0.1 //TODO set it to a correct value
+    return 2.0 //TODO set it to a correct value
 }
 
 /**
@@ -77,6 +116,14 @@ open class Loop() {
 
     operator fun get(index: Int): Any {
         return nodeList[index]
+    }
+
+    override fun toString(): String {
+        return "Loop: $nodeList"
+    }
+
+    fun endJump(): Double {
+        return getPosList().let { it[0] distance it[it.size-1] }
     }
 }
 
