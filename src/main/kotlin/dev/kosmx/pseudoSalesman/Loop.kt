@@ -145,7 +145,7 @@ class Looper(private val loop: Loop, private val entry:Int = 0): Iterable<Pos> {
                 else if(current is Pos) {
                     yield(current)
                 }
-                pos += 1 % loop.size()
+                pos = (pos + 1) % loop.size()
                 if (pos == entry) break
             }
         }

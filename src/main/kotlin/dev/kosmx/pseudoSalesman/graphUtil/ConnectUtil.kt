@@ -18,8 +18,8 @@ private fun connectSetsInternal(node: GraphEntry<Loop>, prev: GraphEntry<Loop>?)
 private fun connectLoops (a: Loop, b:Loop) {
     var closest = Pair(0, 0)
     var minDist = a.getPosList()[0] distance b.getPosList()[0]
-    for (k in 1 until a.size()) {
-        for (l in 0 until b.size()) {
+    for (k in 1 until a.getPosList().size) {
+        for (l in 0 until b.getPosList().size) {
             if (minDist > a.getPosList()[k] distance b.getPosList()[l]) {
                 minDist = a.getPosList()[k] distance b.getPosList()[l]
                 closest = Pair(k, l)

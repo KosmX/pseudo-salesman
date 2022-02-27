@@ -2,6 +2,7 @@ package dev.kosmx.lowPassSimulator
 
 import dev.kosmx.pseudoSalesman.Pos
 import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.InputMismatchException
 import java.util.Scanner
@@ -46,4 +47,25 @@ fun getDataFromFile(filename:String): List<Pos> {
         e.printStackTrace()
     }
     return coords
+}
+
+fun writeCArray(posIt: Iterator<Pos>, file: Path) {
+
+    try {
+        val writer = Files.newBufferedWriter(file)
+
+        writer.write("int shape[] = {")
+
+        while (posIt.hasNext()) {
+            val pos = posIt.next()
+            writer.write("${pos.x}, ${pos.y}")
+
+            if (posIt.hasNext()) writer.write(", ")
+        }
+        writer.write("};")
+
+    } catch (e: Throwable) {
+        e.printStackTrace()
+    }
+
 }

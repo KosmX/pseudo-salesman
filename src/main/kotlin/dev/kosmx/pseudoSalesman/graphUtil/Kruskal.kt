@@ -19,12 +19,13 @@ fun buildMatrix(loops: Collection<Loop>): NeighbourMap<GraphEntry<Loop>, Double>
 }
 
 
-fun kruskal (loops: Collection<Loop>) {
+fun kruskal (loops: Collection<Loop>): GraphEntry<Loop> {
     val matrix = buildMatrix(loops)
 
     val edges = mutableListOf<Triple<GraphEntry<Loop>, GraphEntry<Loop>, Double>>()
 
     for (edge in matrix) {
+        if (edge.first === edge.second) continue
         edges.add(edge)
     }
     edges.sortBy { it.third }
@@ -34,4 +35,5 @@ fun kruskal (loops: Collection<Loop>) {
             edge.first.setNeighbour(edge.second)
         }
     }
+    return edges.iterator().next().first
 }
