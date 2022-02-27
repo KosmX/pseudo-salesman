@@ -4,7 +4,7 @@
 ---
 
 This is a pseudo solver for [Travelling Salesman problem](https://en.wikipedia.org/wiki/Travelling_salesman_problem)  
-Designed to optimize path for [Sasszem/scopelogo](https://github.com/Sasszem/scopelogo)
+Designed to optimize path for [simonyiszk/scopelogo](https://github.com/simonyiszk/scopelogo)
 
 ---
 
