@@ -6,6 +6,7 @@ import dev.kosmx.lowPassSimulator.getDataFromFile
 import dev.kosmx.lowPassSimulator.writeArray
 import dev.kosmx.pseudoSalesman.Pos
 import dev.kosmx.pseudoSalesman.buildLoopsV2
+import dev.kosmx.pseudoSalesman.graphUtil.connectSets
 import dev.kosmx.pseudoSalesman.graphUtil.kruskal
 import org.apache.commons.cli.*
 import java.io.BufferedReader
@@ -20,7 +21,7 @@ import kotlin.system.exitProcess
 fun main(args: Array<String>) {
     val options = Options()
     val input = Option("i", "input", true ,"The array input, \"stdin\" if the input will be received in the stdin").apply { this.isRequired = true }
-    val image = Option("d", "draw", true, "Run simulator and draw result to a file")
+    val imagePath = Option("d", "draw", true, "Run simulator and draw result to a file")
     val imageWidth = Option("w", "width", true, "Width of the image, default: 2048px")
     val imageHeight = Option("h", "height", true, "Height of the image, default: 1024px")
     val xOffset = Option("x", "horizontalOffset", true, "horizontal offset..., default: 0px")
@@ -39,7 +40,7 @@ fun main(args: Array<String>) {
     val stepT = Option("t", "stepTime", true, "The input feeding speed, default: 10.0t")
     val warmupT = Option("warmup", "warmupTime", true, "Simulation time before turning on the output for one cycle, default: 100.0t")
 
-    options.addOptions(input, image, imageWidth, imageHeight, xOffset, yOffset, pencilWidth, pencilStrength, imageScale, output, isIntArray, skipSalesman, simStep, tau, stepT, warmupT)
+    options.addOptions(input, imagePath, imageWidth, imageHeight, xOffset, yOffset, pencilWidth, pencilStrength, imageScale, output, isIntArray, skipSalesman, simStep, tau, stepT, warmupT)
 
 
     val parser: CommandLineParser = DefaultParser()
@@ -47,7 +48,7 @@ fun main(args: Array<String>) {
 
     try {
         val cmd = parser.parse(options, args);
-        if (!cmd.hasOption(output) && !cmd.hasOption(image)) {
+        if (!cmd.hasOption(output) && !cmd.hasOption(imagePath)) {
             println("And what should I do with it?")
             formatter.printHelp("utility-name", options)
             exitProcess(2)
@@ -63,6 +64,7 @@ fun main(args: Array<String>) {
 
         if (!cmd.hasOption(skipSalesman)) {
             val graphEntry = kruskal(buildLoopsV2(data))
+            connectSets(graphEntry)
             val tmpList = mutableListOf<Pos>()
             for (e in graphEntry.t.looper(0)) {
                 tmpList.add(e)
@@ -77,10 +79,11 @@ fun main(args: Array<String>) {
             }
             writer.use {
                 writeArray(data.iterator(), it)
+                it.write("\n")
             }
         }
 
-        if (cmd.hasOption(image)) {
+        if (cmd.hasOption(imagePath)) {
             val image = ImageWrapper(cmd.optional(imageWidth, 2048), cmd.optional(imageWidth, 1024),
                 scale = cmd.optional(imageScale, 8.0),
                 xOffset = cmd.optional(xOffset, 0),
@@ -99,7 +102,7 @@ fun main(args: Array<String>) {
             for (dot in seq) {
                 image.dot(dot.x, dot.y)
             }
-            image.save(Paths.get(cmd.getOptionValue(imageHeight)).toFile())
+            image.save(Paths.get(cmd.getOptionValue(imagePath)).toFile())
         }
 
 

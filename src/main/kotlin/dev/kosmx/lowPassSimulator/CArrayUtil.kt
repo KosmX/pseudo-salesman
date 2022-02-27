@@ -73,8 +73,7 @@ fun writeArray(posIt: Iterator<Pos>, writer: BufferedWriter) {
 
         if (posIt.hasNext()) writer.write(", ")
     }
-    //writer.write("};")
-    writer.close()
+    writer.write("};")
 
 }
 
