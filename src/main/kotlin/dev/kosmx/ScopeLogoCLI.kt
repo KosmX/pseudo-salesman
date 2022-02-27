@@ -49,7 +49,7 @@ fun main(args: Array<String>) {
     try {
         val cmd = parser.parse(options, args);
         if (!cmd.hasOption(output) && !cmd.hasOption(imagePath)) {
-            println("And what should I do with it?")
+            println("Please specify operation! -o or -d, can be both")
             formatter.printHelp("utility-name", options)
             exitProcess(2)
         }
