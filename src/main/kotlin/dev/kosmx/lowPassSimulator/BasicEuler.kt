@@ -8,7 +8,7 @@ import dev.kosmx.pseudoSalesman.Pos
  * @param tau The time constant of the low-pass filter
  * @param stepT The ESP unit's position change speed
  */
-fun eulerSim(poses: List<Pos>, simStep: Double = 0.002, tau: Double = 5.0, stepT: Double = 10.0): Sequence<Pos> {
+fun eulerSim(poses: List<Pos>, simStep: Double = 0.008, tau: Double = 5.0, stepT: Double = 10.0): Sequence<Pos> {
     if (simStep > stepT) throw IllegalArgumentException("That will not work, signal step must be larger than the simulation step")
     return sequence {
         var stateVar = poses[0]

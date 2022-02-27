@@ -5,7 +5,12 @@ import kotlin.math.sqrt
 /**
  * 2d vector with required features
  */
+
 data class Pos(val x: Double, val y: Double) {
+
+    companion object {
+        val ZERO = Pos(.0, .0)
+    }
 
     operator fun plus(a: Pos): Pos {
         return Pos(this.x + a.x, this.y + a.y)
