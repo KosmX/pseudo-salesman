@@ -4,6 +4,8 @@ import dev.kosmx.lowPassSimulator.ImageWrapper
 import dev.kosmx.lowPassSimulator.eulerSim
 import dev.kosmx.lowPassSimulator.getDataFromFile
 import dev.kosmx.lowPassSimulator.writeArray
+import dev.kosmx.pseudoSalesman.Loop
+import dev.kosmx.pseudoSalesman.Looper
 import dev.kosmx.pseudoSalesman.Pos
 import dev.kosmx.pseudoSalesman.buildLoopsV2
 import dev.kosmx.pseudoSalesman.graphUtil.connectSets
@@ -75,9 +77,10 @@ fun main(args: Array<String>) {
     val stepT = Option("t", "stepTime", true, "The input feeding speed, default: 10.0t")
     val warmupT = Option("warmup", "warmupTime", true, "Simulation time before turning on the output for one cycle, default: 100.0t")
 
+    val iterateCount = Option("l", "loop", true, "The amount of loops before jumping, default: 0")
     val help = Option("h", "help", false, "Print the help text")
 
-    options.addOptions(input, imagePath, imageWidth, imageHeight, xOffset, yOffset, pencilWidth, pencilStrength, imageScale, output, isIntArray, skipSalesman, simStep, tau, stepT, warmupT, help)
+    options.addOptions(input, imagePath, imageWidth, imageHeight, xOffset, yOffset, pencilWidth, pencilStrength, imageScale, output, isIntArray, skipSalesman, simStep, tau, stepT, warmupT, help, iterateCount)
 
 
     val parser: CommandLineParser = DefaultParser()
@@ -108,6 +111,7 @@ fun main(args: Array<String>) {
         }
 
         if (!cmd.hasOption(skipSalesman)) {
+            Looper.loopBeforeJump = cmd.optional(iterateCount, 0);
             val graphEntry = kruskal(buildLoopsV2(data))
             connectSets(graphEntry)
             val tmpList = mutableListOf<Pos>()

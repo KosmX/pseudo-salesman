@@ -127,7 +127,13 @@ open class Loop() {
     }
 }
 
+
 class Looper(private val loop: Loop, private val entry:Int = 0): Iterable<Pos> {
+
+    companion object{
+        var loopBeforeJump = 0;
+    }
+
     init {
         if (entry > loop.size()) throw IllegalArgumentException("Can not enter in higher index than the size of the loop")
     }
@@ -135,9 +141,10 @@ class Looper(private val loop: Loop, private val entry:Int = 0): Iterable<Pos> {
     override fun iterator(): Iterator<Pos> {
         return iterator {
             var pos = entry
+            var iterateCount = loopBeforeJump;
             while (true) {
                 val current = loop[pos]
-                if (current is Iterable<*>) {
+                if (current is Iterable<*> && iterateCount == 0) {
                     for (subEntry in current) {
                         yield(subEntry as Pos)
                     }
@@ -146,7 +153,12 @@ class Looper(private val loop: Loop, private val entry:Int = 0): Iterable<Pos> {
                     yield(current)
                 }
                 pos = (pos + 1) % loop.size()
-                if (pos == entry) break
+                if (pos == entry) {
+                    if (iterateCount > 0) {
+                        iterateCount--
+                    }
+                    else break
+                }
             }
         }
     }

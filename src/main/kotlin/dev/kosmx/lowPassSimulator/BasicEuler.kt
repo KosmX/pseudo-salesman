@@ -23,7 +23,12 @@ fun eulerSim(poses: List<Pos>, simStep: Double = 0.008, tau: Double = 5.0, stepT
             time += simStep
             val pose = poses[(time.mod(maxTime) / stepT).toInt()]
 
-            stateVar += (pose - stateVar) / tau * simStep
+            if (tau > simStep) {
+                stateVar += (pose - stateVar) / tau * simStep
+            } else {
+                stateVar = pose
+            }
+
             if (time >= tWarmup) {
                 yield(stateVar)
             }
